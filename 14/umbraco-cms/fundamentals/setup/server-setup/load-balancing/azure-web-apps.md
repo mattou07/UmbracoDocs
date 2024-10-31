@@ -23,6 +23,36 @@ The single instance Backoffice Administrative Web App should be set to use [Sync
 
 The multi-instance Scalable Public Web App should be set to use [TempFileSystemDirectoryFactory](file-system-replication.md#examine-directory-factory-options).
 
+## Main dom key discriminator
+Needed for cases where you are slot swapping to prevent Nucache file locking occuring either during the swap or when Azure replaces unhealthy instances in the background. Read more about this here [Main Dom Key Discriminator](../../../../reference/configuration/globalsettings#main-dom-key-discriminator)
+
+The value can be anything as long as its different to the slot or slots:
+
+### Main Web App
+```json
+{
+    "Umbraco": {
+        "CMS": {
+            "GLOBAL": {
+                "MAINDOMKEYDISCRIMINATOR" : "UmbracoProduction"
+            }
+        }
+    }
+}
+```
+### Web App Slot
+```json
+{
+    "Umbraco": {
+        "CMS": {
+            "GLOBAL": {
+                "MAINDOMKEYDISCRIMINATOR" : "UmbracoSlot"
+            }
+        }
+    }
+}
+```
+
 ## Umbraco TEMP files
 
 When an instance of Umbraco starts up it generates some 'temporary' files on disk. In a normal IIS environment, these would be created within the folders of the Web Application. In an Azure Web App, we want these to be created in the local storage of the actual server that Azure happens to be used for the Web App. So we set this configuration setting to 'true' and the temporary files will be located in the environment temporary folder. This is required for both the performance of the website as well as to prevent file locks from occurring due to the nature of Azure Web Apps shared files system.
